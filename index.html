@@ -1,0 +1,3285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaVision - Transform Emotions into AI Art</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom text selection */
+        ::selection {
+            background: rgba(124, 58, 237, 0.2);
+            color: #0f172a;
+        }
+
+        ::-moz-selection {
+            background: rgba(124, 58, 237, 0.2);
+            color: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #faf9fc 0%, #f5f3f9 100%);
+            background-attachment: fixed;
+            color: #0f172a;
+            line-height: 1.6;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            animation: pageLoad 0.6s ease-out;
+        }
+
+        @keyframes pageLoad {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 72px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #7C3AED 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: default;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            font-size: 14px;
+            font-weight: 500;
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #7C3AED, #8b5cf6);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 1px;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus {
+            color: #7C3AED;
+            outline: none;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a:focus::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: #7C3AED;
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+            background: linear-gradient(90deg, #7C3AED, #8b5cf6);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* App Header - with subtle gradient */
+        .app-header {
+            text-align: center;
+            padding-top: 120px;
+            padding-bottom: 48px;
+            background: linear-gradient(180deg, #ffffff 0%, #f9f7fc 50%, #ffffff 100%);
+            position: relative;
+        }
+
+        .app-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.25), transparent);
+        }
+
+        .app-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.2), transparent);
+        }
+
+        .app-header-title {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #7C3AED 0%, #8b5cf6 50%, #7C3AED 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 30px rgba(124, 58, 237, 0.15);
+        }
+
+        .app-header-subtitle {
+            font-size: 18px;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        /* Section Styling */
+        section {
+            padding: 100px 24px;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-tag {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #7C3AED;
+            margin-bottom: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-tag::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #7C3AED, #8b5cf6);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(124, 58, 237, 0.4);
+        }
+
+        .section-title {
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: #0f172a;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Try It Section */
+        #try-it {
+            background: #fff;
+            padding-top: 0;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 32px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .app-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid rgba(124, 58, 237, 0.08);
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .app-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(124, 58, 237, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: rgba(124, 58, 237, 0.12);
+        }
+
+        .input-card {
+            padding: 32px;
+            background: #FFFFFF;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 140px;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #0f172a;
+            background: #fff;
+            resize: none;
+            transition: all 0.3s ease;
+            cursor: text;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        textarea::placeholder {
+            color: #94a3b8;
+            transition: opacity 0.3s ease;
+        }
+
+        textarea:focus::placeholder {
+            opacity: 0.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #7C3AED;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12);
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px 44px 14px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 15px;
+            color: #0f172a;
+            background: #fff;
+            cursor: pointer;
+            appearance: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        select:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #7C3AED;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12), 0 4px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .select-arrow {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #64748b;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+        }
+
+        select:focus + .select-arrow {
+            color: #7C3AED;
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .generate-btn {
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #7C3AED 0%, #8b5cf6 50%, #7C3AED 100%);
+            background-size: 200% 200%;
+            background-position: 0% 50%;
+            color: #fff;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35), 0 0 0 0 rgba(124, 58, 237, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 28px rgba(124, 58, 237, 0.45), 0 0 0 4px rgba(124, 58, 237, 0.1);
+            background-position: 100% 50%;
+        }
+
+        .generate-btn:active:not(:disabled) {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.85;
+            cursor: not-allowed;
+            transform: none;
+            animation: none;
+        }
+
+        /* Gentle pulse when button is ready */
+        .generate-btn.ready {
+            animation: readyPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes readyPulse {
+            0%, 100% {
+                box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
+            }
+            50% {
+                box-shadow: 0 4px 24px rgba(124, 58, 237, 0.5), 0 0 0 6px rgba(124, 58, 237, 0.1);
+            }
+        }
+
+        .generate-btn .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        .generate-btn.loading .spinner {
+            display: block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .output-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-display {
+            aspect-ratio: 1;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .image-display.generating {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: inset 0 0 30px rgba(99, 102, 241, 0.05);
+            }
+            50% {
+                box-shadow: inset 0 0 50px rgba(99, 102, 241, 0.15);
+            }
+        }
+
+        .image-display img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.6s ease, transform 0.3s ease;
+        }
+
+        .image-display img.visible {
+            display: block;
+            opacity: 1;
+            animation: imageReveal 0.6s ease;
+        }
+
+        @keyframes imageReveal {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .image-display img:hover {
+            transform: scale(1.02);
+            cursor: zoom-in;
+        }
+
+        /* Glow effect when image is present */
+        .image-display.has-image {
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.15), 0 0 0 1px rgba(99, 102, 241, 0.1);
+        }
+
+        .image-placeholder {
+            text-align: center;
+            color: #94a3b8;
+            transition: opacity 0.3s ease;
+        }
+
+        .placeholder-icon {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.4;
+            transition: opacity 0.3s ease;
+        }
+
+        .placeholder-text {
+            font-size: 15px;
+        }
+
+        .image-display.generating .placeholder-icon {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Analysis Section */
+        .analysis-section {
+            margin-top: 40px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .analysis-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #6366f1;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid transparent;
+            background-image: linear-gradient(#fff, #fff), linear-gradient(90deg, #6366f1, #8b5cf6, #e2e8f0);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+        }
+
+        .analysis-header svg {
+            width: 22px;
+            height: 22px;
+            filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.2));
+        }
+
+        .analysis-content {
+            display: block;
+            margin-top: 0;
+            padding: 24px;
+            background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .analysis-content:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .analysis-group h4 {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .emotion-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .emotion-name {
+            width: 70px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .emotion-track {
+            flex: 1;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .emotion-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa);
+            border-radius: 3px;
+            box-shadow: 0 1px 4px rgba(99, 102, 241, 0.3);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .emotion-fill.secondary {
+            background: linear-gradient(90deg, #94a3b8, #cbd5e1);
+            box-shadow: none;
+        }
+
+        .emotion-value {
+            width: 40px;
+            font-size: 12px;
+            color: #94a3b8;
+            text-align: right;
+        }
+
+        .prompt-text {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.7;
+            font-style: italic;
+        }
+
+        /* Enhanced Analysis Section - Always Visible */
+        .analysis-section {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .primary-emotion-display {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .primary-emotion-label {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+        }
+
+        .primary-emotion-value {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: capitalize;
+        }
+
+        .primary-emotion-confidence {
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        /* Default state styling */
+        .primary-emotion-value.default {
+            opacity: 0.5;
+            background: #94a3b8;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dimension-value.neutral {
+            color: #94a3b8;
+        }
+
+        .dimension-value.calm {
+            color: #94a3b8;
+        }
+
+        .prompt-text.default {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .dimension-indicators {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .dimension-item {
+            flex: 1;
+            padding: 14px 18px;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .dimension-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .dimension-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .dimension-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .dimension-value.positive {
+            color: #22c55e;
+        }
+
+        .dimension-value.negative {
+            color: #ef4444;
+        }
+
+        .dimension-value.energized {
+            color: #f59e0b;
+        }
+
+        .dimension-value.calm {
+            color: #3b82f6;
+        }
+
+        .dimension-number {
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 400;
+            margin-left: 4px;
+        }
+
+        .all-emotions-grid {
+            margin-bottom: 20px;
+        }
+
+        .prompt-section {
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .prompt-label {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+        /* ========== FEATURE 1: Live Emotion Timeline ========== */
+        .live-emotions {
+            margin-top: 18px;
+            padding: 18px;
+            background: linear-gradient(180deg, #ffffff 0%, #fafbff 100%);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .live-emotions:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .live-emotions-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .live-emotions-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+        }
+
+        .live-emotions-status {
+            font-size: 11px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s ease;
+        }
+
+        .live-emotions-status .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #94a3b8;
+            transition: all 0.3s ease;
+        }
+
+        .live-emotions-status.analyzing .dot {
+            background: #6366f1;
+            animation: pulse-dot 0.8s ease-in-out infinite;
+        }
+
+        .live-emotions-status.analyzing {
+            color: #6366f1;
+        }
+
+        .live-emotions-status.active .dot {
+            background: #22c55e;
+        }
+
+        .live-emotions-status.active {
+            color: #22c55e;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .live-emotions-tip {
+            margin-top: 12px;
+            padding: 8px 12px;
+            background: #fef3c7;
+            border-radius: 8px;
+            font-size: 11px;
+            color: #92400e;
+            display: none;
+        }
+
+        .live-emotions-tip.visible {
+            display: block;
+        }
+
+        .live-emotions-tip svg {
+            width: 12px;
+            height: 12px;
+            display: inline;
+            vertical-align: -2px;
+            margin-right: 4px;
+        }
+
+        .live-emotion-bars {
+            transition: opacity 0.3s ease;
+        }
+
+        .live-emotion-bars.muted {
+            opacity: 0.6;
+        }
+
+        .live-emotion-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .live-emotion-bar:last-child {
+            margin-bottom: 0;
+        }
+
+        .live-emotion-name {
+            width: 60px;
+            font-size: 11px;
+            color: #64748b;
+            text-transform: capitalize;
+            transition: color 0.3s ease, font-weight 0.3s ease;
+        }
+
+        .live-emotion-name.dominant {
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        .live-emotion-track {
+            flex: 1;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .live-emotion-fill {
+            height: 100%;
+            min-width: 2px;
+            background: linear-gradient(90deg, #94a3b8, #cbd5e1);
+            border-radius: 2px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .live-emotion-fill.primary {
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa);
+            box-shadow: 0 1px 4px rgba(99, 102, 241, 0.4);
+        }
+
+        .live-emotion-fill.muted {
+            background: #e2e8f0;
+            box-shadow: none;
+        }
+
+        .live-emotion-value {
+            width: 36px;
+            font-size: 10px;
+            color: #94a3b8;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        /* ========== FEATURE 2: Download Buttons ========== */
+        .download-actions {
+            display: none;
+            gap: 12px;
+            padding: 16px;
+            border-top: 1px solid #e2e8f0;
+            background: linear-gradient(180deg, #fafafa 0%, #f5f5f7 100%);
+        }
+
+        .download-actions.visible {
+            display: flex;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        /* ========== FEATURE 1: Enhanced Loading Animation ========== */
+        .skeleton-loader {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+            background-size: 200% 100%;
+            animation: skeleton-shimmer 1.5s ease-in-out infinite;
+            display: none;
+        }
+
+        .skeleton-loader.active {
+            display: block;
+        }
+
+        @keyframes skeleton-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(250, 250, 250, 0.92);
+            backdrop-filter: blur(4px);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            z-index: 10;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .loading-spinner-large {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #6366f1;
+            border-right-color: #8b5cf6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .loading-text {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .loading-subtext {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* ========== FEATURE 2: Generation Time Display ========== */
+        .generation-time {
+            display: none;
+            text-align: center;
+            padding: 10px 16px;
+            font-size: 12px;
+            color: #64748b;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .generation-time.visible {
+            display: block;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .generation-time .time-value {
+            font-weight: 600;
+            color: #6366f1;
+        }
+
+        /* ========== FEATURE 3: Regenerate Button ========== */
+        .regenerate-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .regenerate-btn:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .regenerate-btn:hover svg {
+            animation: rotate360 0.6s ease;
+        }
+
+        @keyframes rotate360 {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .regenerate-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .regenerate-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ========== FEATURE 4: Example Prompts ========== */
+        .example-prompts {
+            margin-top: 12px;
+        }
+
+        .example-prompts-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .example-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .example-chip {
+            padding: 8px 14px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 12px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .example-chip:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+            background: #f5f3ff;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .example-chip:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* ========== FEATURE 5: Advanced Settings & Seed Control ========== */
+        .advanced-settings {
+            margin-top: 16px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 16px;
+        }
+
+        .advanced-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #94a3b8;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            transition: color 0.3s ease;
+        }
+
+        .advanced-toggle:hover {
+            color: #6366f1;
+        }
+
+        .advanced-toggle svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.3s ease;
+        }
+
+        .advanced-toggle.open svg {
+            transform: rotate(180deg);
+        }
+
+        .advanced-content {
+            display: none;
+            margin-top: 12px;
+            padding: 12px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .advanced-content.open {
+            display: block;
+        }
+
+        .seed-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .seed-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #64748b;
+            white-space: nowrap;
+        }
+
+        .seed-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            color: #0f172a;
+            transition: all 0.3s ease;
+        }
+
+        .seed-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .seed-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .copy-seed-btn {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #fff;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .copy-seed-btn:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+        }
+
+        .copy-seed-btn.copied {
+            background: #dcfce7;
+            border-color: #22c55e;
+            color: #16a34a;
+        }
+
+        .used-seed-display {
+            margin-top: 8px;
+            font-size: 11px;
+            color: #94a3b8;
+            display: none;
+        }
+
+        .used-seed-display.visible {
+            display: block;
+        }
+
+        .used-seed-display span {
+            font-weight: 600;
+            color: #6366f1;
+        }
+
+        /* ========== FEATURE 6: Error Handling ========== */
+        .error-display {
+            display: none;
+            padding: 16px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+
+        .error-display.visible {
+            display: block;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .error-message {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .error-icon {
+            width: 20px;
+            height: 20px;
+            color: #ef4444;
+            flex-shrink: 0;
+        }
+
+        .error-text {
+            font-size: 14px;
+            color: #991b1b;
+            font-weight: 500;
+        }
+
+        .error-details {
+            font-size: 12px;
+            color: #b91c1c;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .retry-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #ef4444;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .retry-btn:hover {
+            background: #dc2626;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .retry-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ========== FEATURE 7: Image History ========== */
+        .image-history {
+            display: block;
+            padding: 20px;
+            border-top: 1px solid #f0f0f0;
+            background: #fafafa;
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .history-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+        }
+
+        .history-count {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+        .history-thumbnails {
+            display: flex;
+            gap: 10px;
+            min-height: 60px;
+        }
+
+        .history-placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            border: 2px dashed #e2e8f0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cbd5e1;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .history-placeholder:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .history-thumbnail {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+        }
+
+        .history-thumbnail:hover {
+            border-color: #7C3AED;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+
+        .history-thumbnail.active {
+            border-color: #7C3AED;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        }
+
+        .history-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .history-tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 12px;
+            background: #0f172a;
+            color: #fff;
+            font-size: 11px;
+            border-radius: 6px;
+            white-space: nowrap;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .history-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #0f172a;
+        }
+
+        .history-thumbnail:hover .history-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .download-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .download-btn:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .download-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .download-btn svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .download-btn:hover svg {
+            transform: translateY(1px);
+        }
+
+        .download-btn.primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border: none;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .download-btn.primary:hover {
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+            transform: translateY(-2px);
+        }
+
+        /* ========== FEATURE 3: Prompt Engineering Display - Always Visible ========== */
+        .prompt-engineering-section {
+            display: block;
+            margin-top: 32px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 0.5s ease 0.1s both;
+        }
+
+        .prompt-engineering-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #6366f1;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid transparent;
+            background-image: linear-gradient(#fff, #fff), linear-gradient(90deg, #6366f1, #8b5cf6, #e2e8f0);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+        }
+
+        .prompt-engineering-header svg {
+            width: 22px;
+            height: 22px;
+            filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.2));
+        }
+
+        .prompt-engineering-content {
+            display: block;
+            margin-top: 0;
+            padding: 24px;
+            background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .prompt-engineering-content:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .prompt-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .prompt-column {
+            padding: 18px;
+            background: #fafafa;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .prompt-column:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .prompt-column-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .prompt-column-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .prompt-column-icon.user {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .prompt-column-icon.enhanced {
+            background: #f3e8ff;
+            color: #8b5cf6;
+        }
+
+        .prompt-column-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .prompt-column-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .prompt-column-text {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .modifiers-section {
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .modifiers-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .modifier-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #fafafa;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .modifier-item:hover {
+            background: #f5f5ff;
+            border-color: rgba(99, 102, 241, 0.1);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.06);
+        }
+
+        .modifier-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .modifier-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .modifier-badge.style {
+            background: #f3e8ff;
+            color: #8b5cf6;
+        }
+
+        .modifier-badge.emotion {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+        .modifier-badge.quality {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .modifier-badge.user {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .modifier-content {
+            flex: 1;
+        }
+
+        .modifier-text {
+            font-size: 13px;
+            color: #0f172a;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .modifier-description {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .prompt-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* How It Works Section */
+        #how-it-works {
+            background: linear-gradient(180deg, #faf9fc 0%, #f5f3f9 100%);
+            position: relative;
+        }
+
+        #how-it-works::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.3), transparent);
+        }
+
+        .steps-container {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 24px;
+            position: relative;
+        }
+
+        /* Flowing connection line behind all steps */
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 44px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 4px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                #e2e8f0 10%,
+                #7C3AED 35%,
+                #7C3AED 65%,
+                #e2e8f0 90%,
+                transparent 100%);
+            border-radius: 2px;
+            z-index: 0;
+        }
+
+        .step {
+            flex: 1;
+            max-width: 300px;
+            text-align: center;
+            position: relative;
+            padding: 0 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-4px);
+        }
+
+        .step-connector {
+            display: none;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #7C3AED;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .step:hover .step-number {
+            border-color: #7C3AED;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .step-description {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        /* Features Section */
+        #features {
+            background: linear-gradient(180deg, #fff 0%, #faf9fc 100%);
+            position: relative;
+        }
+
+        #features::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.3), transparent);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .feature-card {
+            padding: 32px;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid rgba(124, 58, 237, 0.08);
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(124, 58, 237, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: rgba(124, 58, 237, 0.15);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #7C3AED 0%, #8b5cf6 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(124, 58, 237, 0.3);
+        }
+
+        .feature-icon svg {
+            width: 26px;
+            height: 26px;
+            color: #fff;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .feature-card:hover .feature-title {
+            color: #7C3AED;
+        }
+
+        .feature-description {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.75;
+        }
+
+        /* About Section */
+        #about {
+            background: linear-gradient(180deg, #f8f7fc 0%, #f5f3f9 100%);
+            position: relative;
+        }
+
+        #about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.3), transparent);
+        }
+
+        .about-content {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-text {
+            font-size: 17px;
+            color: #64748b;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .tech-badge {
+            padding: 10px 20px;
+            background: #fff;
+            border: 1px solid rgba(124, 58, 237, 0.1);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.04);
+        }
+
+        .tech-badge:hover {
+            border-color: rgba(124, 58, 237, 0.3);
+            color: #7C3AED;
+            background: rgba(124, 58, 237, 0.03);
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(180deg, #f8f7fc 0%, #f5f3f9 100%);
+            padding: 40px 24px;
+            text-align: center;
+            border-top: 1px solid rgba(124, 58, 237, 0.1);
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.4), transparent);
+        }
+
+        .footer-logo {
+            font-size: 18px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #7C3AED, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .footer-tagline {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+
+        .footer-copyright {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        /* Fade In Animation with Staggered Delays */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered animation delays for multiple items */
+        .fade-in[data-delay="1"] { transition-delay: 0.1s; }
+        .fade-in[data-delay="2"] { transition-delay: 0.2s; }
+        .fade-in[data-delay="3"] { transition-delay: 0.3s; }
+        .fade-in[data-delay="4"] { transition-delay: 0.4s; }
+
+        /* Subtle parallax for hero section */
+        .app-header {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .app-header-title,
+        .app-header-subtitle {
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        /* Global focus states for accessibility */
+        *:focus-visible {
+            outline: 2px solid rgba(124, 58, 237, 0.5);
+            outline-offset: 2px;
+        }
+
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid rgba(124, 58, 237, 0.5);
+            outline-offset: 2px;
+        }
+
+        /* Ensure smooth easing on all interactive elements */
+        .tech-badge,
+        .nav-links a,
+        .footer-logo,
+        .step-number,
+        .history-thumbnail,
+        .example-chip {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .steps-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 40px;
+            }
+
+            .steps-container::before {
+                display: none; /* Hide horizontal line on mobile */
+            }
+
+            .step {
+                max-width: 400px;
+            }
+
+
+            .step-connector {
+                display: none;
+            }
+
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .app-header-title {
+                font-size: 36px;
+            }
+
+            .app-header-subtitle {
+                font-size: 16px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            section {
+                padding: 64px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <span class="nav-logo">NovaVision</span>
+            <div class="nav-links">
+                <a href="#analysisSection">Emotion Analysis</a>
+                <a href="#prompt-section">Prompt</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- App Header -->
+    <header class="app-header">
+        <h1 class="app-header-title fade-in">NovaVision</h1>
+        <p class="app-header-subtitle fade-in">Transform emotions into AI-generated art</p>
+    </header>
+
+    <main>
+    <!-- Try It Section -->
+    <section id="try-it">
+        <div class="section-container">
+            <div class="app-container fade-in">
+                <div class="app-card input-card">
+                    <div class="form-group">
+                        <label class="form-label">How are you feeling today?</label>
+                        <textarea id="emotionInput" placeholder="Share a thought, memory, or describe how you're feeling..."></textarea>
+                        <!-- FEATURE 4: Example Prompts -->
+                        <div class="example-prompts">
+                            <div class="example-prompts-label">Try these examples:</div>
+                            <div class="example-chips">
+                                <button class="example-chip" data-prompt="I feel peaceful watching the sunset">Peaceful sunset</button>
+                                <button class="example-chip" data-prompt="Excited about starting a new adventure">New adventure</button>
+                                <button class="example-chip" data-prompt="A majestic lion in the savanna">Majestic lion</button>
+                                <button class="example-chip" data-prompt="Cozy coffee shop on a rainy day">Cozy coffee shop</button>
+                            </div>
+                        </div>
+                        <!-- FEATURE 1: Live Emotion Timeline -->
+                        <div class="live-emotions" id="liveEmotions">
+                            <div class="live-emotions-header">
+                                <span class="live-emotions-title">Live Emotion Analysis</span>
+                                <span class="live-emotions-status" id="liveStatus">
+                                    <span class="dot"></span>
+                                    <span id="liveStatusText">Ready</span>
+                                </span>
+                            </div>
+                            <div class="live-emotion-bars muted" id="liveEmotionBars">
+                                <div class="live-emotion-bar"><span class="live-emotion-name" data-emotion="joy">Joy</span><div class="live-emotion-track"><div class="live-emotion-fill muted" style="width: 2px"></div></div><span class="live-emotion-value">0%</span></div>
+                                <div class="live-emotion-bar"><span class="live-emotion-name" data-emotion="sadness">Sadness</span><div class="live-emotion-track"><div class="live-emotion-fill muted" style="width: 2px"></div></div><span class="live-emotion-value">0%</span></div>
+                                <div class="live-emotion-bar"><span class="live-emotion-name" data-emotion="anger">Anger</span><div class="live-emotion-track"><div class="live-emotion-fill muted" style="width: 2px"></div></div><span class="live-emotion-value">0%</span></div>
+                                <div class="live-emotion-bar"><span class="live-emotion-name" data-emotion="fear">Fear</span><div class="live-emotion-track"><div class="live-emotion-fill muted" style="width: 2px"></div></div><span class="live-emotion-value">0%</span></div>
+                                <div class="live-emotion-bar"><span class="live-emotion-name" data-emotion="surprise">Surprise</span><div class="live-emotion-track"><div class="live-emotion-fill muted" style="width: 2px"></div></div><span class="live-emotion-value">0%</span></div>
+                                <div class="live-emotion-bar"><span class="live-emotion-name" data-emotion="disgust">Disgust</span><div class="live-emotion-track"><div class="live-emotion-fill muted" style="width: 2px"></div></div><span class="live-emotion-value">0%</span></div>
+                                <div class="live-emotion-bar"><span class="live-emotion-name" data-emotion="neutral">Neutral</span><div class="live-emotion-track"><div class="live-emotion-fill muted" style="width: 2px"></div></div><span class="live-emotion-value">0%</span></div>
+                            </div>
+                            <div class="live-emotions-tip" id="liveTip">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                Tip: Describe how you're feeling for better analysis
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Visual Style</label>
+                        <div class="select-wrapper">
+                            <select id="styleSelect">
+                                <option value="artistic">Artistic</option>
+                                <option value="nature">Nature</option>
+                                <option value="abstract">Abstract</option>
+                                <option value="dreamscape">Dreamscape</option>
+                                <option value="photorealistic">Photorealistic</option>
+                            </select>
+                            <span class="select-arrow">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- FEATURE 5: Advanced Settings / Seed Control -->
+                    <div class="advanced-settings">
+                        <button class="advanced-toggle" id="advancedToggle">
+                            <span>Advanced Settings</span>
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                        <div class="advanced-content" id="advancedContent">
+                            <div class="seed-control">
+                                <label class="seed-label">Seed:</label>
+                                <input type="text" class="seed-input" id="seedInput" placeholder="Random (leave empty)">
+                                <button class="copy-seed-btn" id="copySeedBtn">Copy Seed</button>
+                            </div>
+                            <div class="used-seed-display" id="usedSeedDisplay">Last used seed: <span id="lastSeedValue">-</span></div>
+                        </div>
+                    </div>
+
+                    <button class="generate-btn" id="generateBtn">
+                        <span class="spinner"></span>
+                        <span class="btn-text">Generate Visualization</span>
+                    </button>
+
+                    <!-- FEATURE 6: Error Display -->
+                    <div class="error-display" id="errorDisplay">
+                        <div class="error-message">
+                            <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            <div>
+                                <div class="error-text" id="errorText">Generation failed. Please try again.</div>
+                                <div class="error-details" id="errorDetails"></div>
+                            </div>
+                        </div>
+                        <button class="retry-btn" id="retryBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 4 23 10 17 10"/>
+                                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                            </svg>
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+                <div class="app-card output-card">
+                    <div class="image-display" id="imageDisplay">
+                        <!-- FEATURE 1: Skeleton Loader -->
+                        <div class="skeleton-loader" id="skeletonLoader"></div>
+                        <!-- FEATURE 1: Loading Overlay -->
+                        <div class="loading-overlay" id="loadingOverlay">
+                            <div class="loading-spinner-large"></div>
+                            <div class="loading-text" id="loadingText">Analyzing emotions...</div>
+                            <div class="loading-subtext" id="loadingSubtext">This may take 10-20 seconds</div>
+                        </div>
+                        <div class="image-placeholder" id="placeholder">
+                            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <polyline points="21 15 16 10 5 21"/>
+                            </svg>
+                            <p class="placeholder-text">Your art will appear here</p>
+                        </div>
+                        <img id="generatedImage" src="" alt="Generated artwork">
+                    </div>
+                    <!-- FEATURE 2: Generation Time Display -->
+                    <div class="generation-time" id="generationTime">
+                        Generated in <span class="time-value" id="generationTimeValue">0.0</span> seconds
+                    </div>
+                    <!-- Download & Regenerate Actions -->
+                    <div class="download-actions" id="downloadActions">
+                        <button class="download-btn primary" id="downloadImageBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Download
+                        </button>
+                        <button class="download-btn" id="downloadReportBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                            Report
+                        </button>
+                        <!-- FEATURE 3: Regenerate Button -->
+                        <button class="regenerate-btn" id="regenerateBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 4 23 10 17 10"/>
+                                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                            </svg>
+                            Regenerate
+                        </button>
+                    </div>
+                    <!-- FEATURE 7: Image History -->
+                    <div class="image-history" id="imageHistory">
+                        <div class="history-header">
+                            <span class="history-title">Recent Generations</span>
+                            <span class="history-count" id="historyCount">0 of 4</span>
+                        </div>
+                        <div class="history-thumbnails" id="historyThumbnails">
+                            <div class="history-placeholder">+</div>
+                            <div class="history-placeholder">+</div>
+                            <div class="history-placeholder">+</div>
+                            <div class="history-placeholder">+</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="analysis-section" id="analysisSection">
+                <div class="analysis-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                        <line x1="9" y1="9" x2="9.01" y2="9"/>
+                        <line x1="15" y1="9" x2="15.01" y2="9"/>
+                    </svg>
+                    <span>Emotion Analysis</span>
+                </div>
+                <div class="analysis-content" id="analysisContent">
+                    <!-- Primary Emotion Display -->
+                    <div class="primary-emotion-display" id="primaryEmotionSection">
+                        <span class="primary-emotion-label">Primary Emotion:</span>
+                        <span class="primary-emotion-value default" id="primaryEmotion">Neutral</span>
+                        <span class="primary-emotion-confidence" id="primaryConfidence">--</span>
+                    </div>
+
+                    <!-- Valence & Arousal Indicators -->
+                    <div class="dimension-indicators" id="dimensionSection">
+                        <div class="dimension-item">
+                            <div class="dimension-label">Valence</div>
+                            <div class="dimension-value neutral" id="valenceDisplay">Neutral<span class="dimension-number">(0.0)</span></div>
+                        </div>
+                        <div class="dimension-item">
+                            <div class="dimension-label">Arousal</div>
+                            <div class="dimension-value calm" id="arousalDisplay">Calm<span class="dimension-number">(0.0)</span></div>
+                        </div>
+                    </div>
+
+                    <!-- All 7 Emotions Bar Chart -->
+                    <div class="all-emotions-grid" id="allEmotionsSection">
+                        <h4 style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin-bottom: 16px;">All Emotions</h4>
+                        <div id="emotionBars">
+                            <div class="emotion-bar"><span class="emotion-name">Joy</span><div class="emotion-track"><div class="emotion-fill" style="width: 0%"></div></div><span class="emotion-value">0%</span></div>
+                            <div class="emotion-bar"><span class="emotion-name">Sadness</span><div class="emotion-track"><div class="emotion-fill" style="width: 0%"></div></div><span class="emotion-value">0%</span></div>
+                            <div class="emotion-bar"><span class="emotion-name">Anger</span><div class="emotion-track"><div class="emotion-fill" style="width: 0%"></div></div><span class="emotion-value">0%</span></div>
+                            <div class="emotion-bar"><span class="emotion-name">Fear</span><div class="emotion-track"><div class="emotion-fill" style="width: 0%"></div></div><span class="emotion-value">0%</span></div>
+                            <div class="emotion-bar"><span class="emotion-name">Surprise</span><div class="emotion-track"><div class="emotion-fill" style="width: 0%"></div></div><span class="emotion-value">0%</span></div>
+                            <div class="emotion-bar"><span class="emotion-name">Disgust</span><div class="emotion-track"><div class="emotion-fill" style="width: 0%"></div></div><span class="emotion-value">0%</span></div>
+                            <div class="emotion-bar"><span class="emotion-name">Neutral</span><div class="emotion-track"><div class="emotion-fill" style="width: 0%"></div></div><span class="emotion-value">0%</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Prompt Section -->
+                    <div class="prompt-section" id="promptSection">
+                        <div class="prompt-label">Generated Prompt</div>
+                        <p class="prompt-text default" id="promptText">Your enhanced prompt will appear here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FEATURE 3: Prompt Engineering Display -->
+            <div class="prompt-engineering-section" id="prompt-section">
+                <div class="prompt-engineering-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    <span>How Your Prompt Was Enhanced</span>
+                </div>
+                <div class="prompt-engineering-content" id="promptEngineeringContent">
+                    <div class="prompt-comparison">
+                        <div class="prompt-column">
+                            <div class="prompt-column-header">
+                                <div class="prompt-column-icon user">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
+                                </div>
+                                <span class="prompt-column-title">Your Input</span>
+                            </div>
+                            <p class="prompt-column-text" id="userInputDisplay">Your text will appear here...</p>
+                        </div>
+                        <div class="prompt-column">
+                            <div class="prompt-column-header">
+                                <div class="prompt-column-icon enhanced">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                    </svg>
+                                </div>
+                                <span class="prompt-column-title">Enhanced Prompt</span>
+                            </div>
+                            <p class="prompt-column-text" id="enhancedPromptDisplay">Enhanced prompt will appear here...</p>
+                        </div>
+                    </div>
+                    <div class="modifiers-section">
+                        <div class="modifiers-title">Modifiers Added</div>
+                        <div id="modifiersList">
+                            <div class="modifier-item">
+                                <span class="modifier-badge user">User</span>
+                                <div class="modifier-content">
+                                    <div class="modifier-text" id="modUserText">-</div>
+                                    <div class="modifier-description">Your original description</div>
+                                </div>
+                            </div>
+                            <div class="modifier-item">
+                                <span class="modifier-badge style">Style</span>
+                                <div class="modifier-content">
+                                    <div class="modifier-text" id="modStyleText">-</div>
+                                    <div class="modifier-description">Added based on your style selection</div>
+                                </div>
+                            </div>
+                            <div class="modifier-item">
+                                <span class="modifier-badge quality">Quality</span>
+                                <div class="modifier-content">
+                                    <div class="modifier-text">"masterpiece, best quality, highly detailed, 8k resolution, sharp focus, professional"</div>
+                                    <div class="modifier-description">Added automatically for high-quality output</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <p class="section-tag">Your Journey</p>
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">From feeling to artwork in three seamless steps</p>
+            </div>
+            <div class="steps-container">
+                <div class="step fade-in" data-delay="1">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Express</h3>
+                    <p class="step-description">Type anything — a feeling, a memory, or a scene you want to see come to life.</p>
+                </div>
+                <div class="step fade-in" data-delay="2">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Understand</h3>
+                    <p class="step-description">AI instantly reads your emotions and picks the perfect visual style to match your mood.</p>
+                </div>
+                <div class="step fade-in" data-delay="3">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Create</h3>
+                    <p class="step-description">Watch as your words transform into stunning, unique artwork in seconds.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <p class="section-tag">Why NovaVision</p>
+                <h2 class="section-title">Features</h2>
+                <p class="section-subtitle">Art that truly understands you</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card fade-in" data-delay="1">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                            <line x1="9" y1="9" x2="9.01" y2="9"/>
+                            <line x1="15" y1="9" x2="15.01" y2="9"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Knows How You Feel</h3>
+                    <p class="feature-description">
+                        Type naturally. Our AI detects joy, sadness, excitement, calm — and adjusts the artwork to match your emotional state perfectly.
+                    </p>
+                </div>
+                <div class="feature-card fade-in" data-delay="2">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Smart Visual Translation</h3>
+                    <p class="feature-description">
+                        Feeling peaceful? Get soft, warm colors. Feeling energetic? Get vibrant, dynamic visuals. The AI automatically picks the right aesthetic for you.
+                    </p>
+                </div>
+                <div class="feature-card fade-in" data-delay="3">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Instant HD Artwork</h3>
+                    <p class="feature-description">
+                        No waiting. Get beautiful 1024×1024 images in seconds — ready to download, share, or use anywhere.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <p class="section-tag">Technology</p>
+                <h2 class="section-title">About NovaVision</h2>
+            </div>
+            <div class="about-content fade-in">
+                <p class="about-text">
+                    NovaVision combines state-of-the-art natural language processing with advanced image generation
+                    to create a unique bridge between human emotion and visual art. Using transformer-based emotion
+                    detection and diffusion-based image synthesis, we transform the intangible nature of feelings
+                    into stunning, personalized artwork.
+                </p>
+                <div class="tech-stack fade-in" data-delay="1">
+                    <span class="tech-badge">Python</span>
+                    <span class="tech-badge">Gradio</span>
+                    <span class="tech-badge">HuggingFace</span>
+                    <span class="tech-badge">Transformers</span>
+                    <span class="tech-badge">Stable Diffusion</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">NovaVision</div>
+        <p class="footer-tagline">AI-powered emotion visualization</p>
+        <p class="footer-copyright">&copy; 2026 NovaVision. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Navbar scroll effect + Subtle parallax for hero + Active nav highlighting
+        const navbar = document.getElementById('navbar');
+        const heroTitle = document.querySelector('.app-header-title');
+        const heroSubtitle = document.querySelector('.app-header-subtitle');
+        const navLinks = document.querySelectorAll('.nav-links a');
+        const sections = document.querySelectorAll('section[id], .analysis-section[id], .prompt-engineering-section[id]');
+
+        function updateActiveNav() {
+            const scrollY = window.scrollY + 100;
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+
+            // Navbar effect
+            if (scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            // Subtle parallax effect for hero (only in first 400px of scroll)
+            if (scrollY < 400) {
+                const parallaxAmount = scrollY * 0.15;
+                const opacityAmount = Math.max(0, 1 - (scrollY / 300));
+                if (heroTitle) {
+                    heroTitle.style.transform = `translateY(${parallaxAmount}px)`;
+                    heroTitle.style.opacity = opacityAmount;
+                }
+                if (heroSubtitle) {
+                    heroSubtitle.style.transform = `translateY(${parallaxAmount * 0.8}px)`;
+                    heroSubtitle.style.opacity = opacityAmount;
+                }
+            }
+
+            // Update active nav link
+            updateActiveNav();
+        }, { passive: true });
+
+        // Initial call to set active state
+        updateActiveNav();
+
+        // Fade in on scroll
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // ========== FEATURE 1: Live Emotion Timeline ==========
+        const liveEmotions = document.getElementById('liveEmotions');
+        const liveStatus = document.getElementById('liveStatus');
+        const liveStatusText = document.getElementById('liveStatusText');
+        const liveEmotionBars = document.getElementById('liveEmotionBars');
+        const liveTip = document.getElementById('liveTip');
+        let debounceTimer = null;
+        let lastAnalyzedText = '';
+
+        const emotionOrder = ['joy', 'sadness', 'anger', 'fear', 'surprise', 'disgust', 'neutral'];
+
+        // Emotion-related words for smart detection
+        const emotionWords = [
+            'happy', 'sad', 'angry', 'scared', 'afraid', 'surprised', 'disgusted',
+            'joy', 'joyful', 'excited', 'love', 'hate', 'fear', 'anxious', 'worried',
+            'upset', 'frustrated', 'annoyed', 'pleased', 'delighted', 'thrilled',
+            'depressed', 'lonely', 'hopeful', 'grateful', 'proud', 'ashamed',
+            'embarrassed', 'nervous', 'calm', 'peaceful', 'content', 'miserable',
+            'furious', 'terrified', 'amazed', 'shocked', 'feel', 'feeling', 'felt',
+            'mood', 'emotion', 'hurt', 'pain', 'suffering', 'blessed', 'wonderful',
+            'terrible', 'awful', 'great', 'amazing', 'horrible', 'fantastic'
+        ];
+
+        function hasEmotionalContext(text) {
+            const lowerText = text.toLowerCase();
+            const words = lowerText.split(/\s+/);
+
+            // Check if any emotion words are present
+            const hasEmotionWord = emotionWords.some(ew => lowerText.includes(ew));
+
+            // Check if it's a sentence (has verb-like patterns or is longer)
+            const isSentence = words.length >= 4 ||
+                              /\b(i |i'm |i am |we |you |they |he |she |it |is |are |was |were |feel|think|believe|want|need|love|hate)\b/i.test(lowerText);
+
+            return hasEmotionWord || isSentence;
+        }
+
+        function resetToEmpty() {
+            liveEmotionBars.classList.add('muted');
+            liveTip.classList.remove('visible');
+            liveStatus.classList.remove('analyzing', 'active');
+            liveStatusText.textContent = 'Ready';
+
+            emotionOrder.forEach((emotion, index) => {
+                const bar = liveEmotionBars.children[index];
+                if (bar) {
+                    const nameEl = bar.querySelector('.live-emotion-name');
+                    const fill = bar.querySelector('.live-emotion-fill');
+                    const value = bar.querySelector('.live-emotion-value');
+                    nameEl.classList.remove('dominant');
+                    fill.style.width = '2px';
+                    fill.className = 'live-emotion-fill muted';
+                    value.textContent = '0%';
+                }
+            });
+        }
+
+        function updateLiveEmotions(emotions, primaryEmotion, confidence, showTip = false) {
+            liveEmotionBars.classList.remove('muted');
+            liveTip.classList.toggle('visible', showTip);
+            liveStatus.classList.remove('analyzing');
+            liveStatus.classList.add('active');
+
+            const emotionMap = {};
+            emotions.forEach(e => { emotionMap[e.name] = e.score; });
+
+            // Only show dominant badge if confidence > 30%
+            const showDominant = confidence > 30;
+
+            emotionOrder.forEach((emotion, index) => {
+                const bar = liveEmotionBars.children[index];
+                if (bar) {
+                    const nameEl = bar.querySelector('.live-emotion-name');
+                    const fill = bar.querySelector('.live-emotion-fill');
+                    const value = bar.querySelector('.live-emotion-value');
+                    const score = emotionMap[emotion] || 0;
+
+                    // Min width of 2px, then percentage
+                    const width = score > 0 ? Math.max(2, score) + '%' : '2px';
+                    fill.style.width = width;
+
+                    const isPrimary = emotion === primaryEmotion && showDominant;
+                    fill.className = 'live-emotion-fill' + (isPrimary ? ' primary' : '');
+                    nameEl.classList.toggle('dominant', isPrimary);
+                    value.textContent = score.toFixed(1) + '%';
+                }
+            });
+
+            // Update status text
+            if (showDominant) {
+                liveStatusText.textContent = primaryEmotion.charAt(0).toUpperCase() + primaryEmotion.slice(1);
+            } else {
+                liveStatusText.textContent = 'Analyzing...';
+            }
+        }
+
+        function setNeutralDominant(showTip = true) {
+            // For non-emotional inputs, show high neutral
+            const neutralEmotions = [
+                { name: 'joy', score: 2 },
+                { name: 'sadness', score: 3 },
+                { name: 'anger', score: 1 },
+                { name: 'fear', score: 1 },
+                { name: 'surprise', score: 5 },
+                { name: 'disgust', score: 1 },
+                { name: 'neutral', score: 87 }
+            ];
+            updateLiveEmotions(neutralEmotions, 'neutral', 87, showTip);
+        }
+
+        async function analyzeLive(text) {
+            liveStatus.classList.add('analyzing');
+            liveStatus.classList.remove('active');
+            liveStatusText.textContent = 'Analyzing...';
+
+            // Smart detection: check if input has emotional context
+            const hasEmotion = hasEmotionalContext(text);
+            const wordCount = text.split(/\s+/).length;
+
+            // If very short and no emotion words, default to neutral
+            if (wordCount <= 2 && !hasEmotion) {
+                setTimeout(() => {
+                    setNeutralDominant(true);
+                }, 300); // Small delay for visual feedback
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Show tip if input seems non-emotional but model gave a result
+                    const showTip = !hasEmotion && wordCount < 5;
+                    updateLiveEmotions(data.emotions, data.primary_emotion, data.confidence, showTip);
+                }
+            } catch (error) {
+                console.error('Live analysis error:', error);
+                liveStatus.classList.remove('analyzing');
+            }
+        }
+
+        const emotionInput = document.getElementById('emotionInput');
+
+        // Initialize with empty state
+        resetToEmpty();
+
+        emotionInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            const text = emotionInput.value.trim();
+
+            if (text.length === 0) {
+                resetToEmpty();
+                lastAnalyzedText = '';
+                generateBtn.classList.remove('ready');
+                return;
+            }
+
+            // Add ready pulse to button when text is entered
+            if (text.length >= 2) {
+                generateBtn.classList.add('ready');
+            }
+
+            if (text !== lastAnalyzedText && text.length >= 2) {
+                debounceTimer = setTimeout(() => {
+                    lastAnalyzedText = text;
+                    analyzeLive(text);
+                }, 500);
+            }
+        });
+
+        // ========== FEATURE 2: Download Functions ==========
+        let currentGenerationData = null;
+
+        function downloadImage() {
+            if (!currentGenerationData) return;
+
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+            const filename = `novavision_${currentGenerationData.primary_emotion}_${timestamp}.png`;
+            link.download = filename;
+            link.href = currentGenerationData.image;
+            link.click();
+        }
+
+        function downloadReport() {
+            if (!currentGenerationData) return;
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 1200;
+            canvas.height = 1600;
+
+            // Background
+            ctx.fillStyle = '#fafafa';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Header gradient bar
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            gradient.addColorStop(0, '#6366f1');
+            gradient.addColorStop(1, '#8b5cf6');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, 80);
+
+            // NovaVision logo
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 32px Inter, sans-serif';
+            ctx.fillText('NovaVision', 40, 52);
+
+            // Timestamp
+            ctx.font = '16px Inter, sans-serif';
+            ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            const date = new Date(currentGenerationData.timestamp).toLocaleString();
+            ctx.textAlign = 'right';
+            ctx.fillText(date, canvas.width - 40, 52);
+            ctx.textAlign = 'left';
+
+            // Load and draw the generated image
+            const img = new Image();
+            img.onload = () => {
+                // Image frame
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = 'rgba(0,0,0,0.1)';
+                ctx.shadowBlur = 20;
+                ctx.fillRect(40, 120, 700, 700);
+                ctx.shadowBlur = 0;
+
+                ctx.drawImage(img, 50, 130, 680, 680);
+
+                // Emotion Analysis section
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 24px Inter, sans-serif';
+                ctx.fillText('Emotion Analysis', 780, 160);
+
+                // Primary emotion
+                ctx.font = '14px Inter, sans-serif';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText('PRIMARY EMOTION', 780, 200);
+
+                ctx.font = 'bold 36px Inter, sans-serif';
+                ctx.fillStyle = '#6366f1';
+                const primaryText = currentGenerationData.primary_emotion.charAt(0).toUpperCase() +
+                    currentGenerationData.primary_emotion.slice(1);
+                ctx.fillText(primaryText, 780, 240);
+
+                ctx.font = '16px Inter, sans-serif';
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillText(currentGenerationData.confidence + '% confidence', 780, 270);
+
+                // Emotion bars
+                let yPos = 320;
+                currentGenerationData.emotions.forEach((e, i) => {
+                    ctx.font = '13px Inter, sans-serif';
+                    ctx.fillStyle = '#64748b';
+                    ctx.fillText(e.name.charAt(0).toUpperCase() + e.name.slice(1), 780, yPos);
+
+                    // Track
+                    ctx.fillStyle = '#e2e8f0';
+                    ctx.fillRect(870, yPos - 10, 250, 8);
+
+                    // Fill
+                    ctx.fillStyle = i === 0 ? '#6366f1' : '#cbd5e1';
+                    ctx.fillRect(870, yPos - 10, (e.score / 100) * 250, 8);
+
+                    // Value
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.fillText(e.score.toFixed(1) + '%', 1130, yPos);
+
+                    yPos += 35;
+                });
+
+                // Prompt section
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 20px Inter, sans-serif';
+                ctx.fillText('Generated Prompt', 40, 880);
+
+                ctx.font = '14px Inter, sans-serif';
+                ctx.fillStyle = '#64748b';
+
+                // Word wrap the prompt
+                const words = currentGenerationData.prompt.split(' ');
+                let line = '';
+                let lineY = 920;
+                const maxWidth = canvas.width - 80;
+
+                words.forEach(word => {
+                    const testLine = line + word + ' ';
+                    const metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth && line !== '') {
+                        ctx.fillText(line, 40, lineY);
+                        line = word + ' ';
+                        lineY += 24;
+                    } else {
+                        line = testLine;
+                    }
+                });
+                ctx.fillText(line, 40, lineY);
+
+                // User input section
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 20px Inter, sans-serif';
+                ctx.fillText('Original Input', 40, lineY + 60);
+
+                ctx.font = 'italic 16px Inter, sans-serif';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText('"' + currentGenerationData.original_text + '"', 40, lineY + 95);
+
+                // Footer
+                ctx.fillStyle = '#e2e8f0';
+                ctx.fillRect(0, canvas.height - 60, canvas.width, 60);
+
+                ctx.font = '14px Inter, sans-serif';
+                ctx.fillStyle = '#94a3b8';
+                ctx.textAlign = 'center';
+                ctx.fillText('Generated with NovaVision - AI-powered emotion visualization', canvas.width / 2, canvas.height - 25);
+
+                // Download
+                const link = document.createElement('a');
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+                link.download = `novavision_report_${timestamp}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            };
+            img.src = currentGenerationData.image;
+        }
+
+        document.getElementById('downloadImageBtn').addEventListener('click', downloadImage);
+        document.getElementById('downloadReportBtn').addEventListener('click', downloadReport);
+
+        // ========== FEATURE 4: Example Prompts ==========
+        document.querySelectorAll('.example-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                emotionInput.value = chip.dataset.prompt;
+                emotionInput.focus();
+                // Trigger live analysis
+                const event = new Event('input', { bubbles: true });
+                emotionInput.dispatchEvent(event);
+            });
+        });
+
+        // ========== FEATURE 5: Advanced Settings Toggle ==========
+        const advancedToggle = document.getElementById('advancedToggle');
+        const advancedContent = document.getElementById('advancedContent');
+        const seedInput = document.getElementById('seedInput');
+        const copySeedBtn = document.getElementById('copySeedBtn');
+        const usedSeedDisplay = document.getElementById('usedSeedDisplay');
+        const lastSeedValue = document.getElementById('lastSeedValue');
+        let lastUsedSeed = null;
+
+        advancedToggle.addEventListener('click', () => {
+            advancedToggle.classList.toggle('open');
+            advancedContent.classList.toggle('open');
+        });
+
+        copySeedBtn.addEventListener('click', () => {
+            if (lastUsedSeed) {
+                navigator.clipboard.writeText(lastUsedSeed.toString()).then(() => {
+                    copySeedBtn.textContent = 'Copied!';
+                    copySeedBtn.classList.add('copied');
+                    setTimeout(() => {
+                        copySeedBtn.textContent = 'Copy Seed';
+                        copySeedBtn.classList.remove('copied');
+                    }, 2000);
+                });
+            }
+        });
+
+        // ========== FEATURE 7: Image History ==========
+        const imageHistory = [];
+        const maxHistoryItems = 4;
+        const historyThumbnails = document.getElementById('historyThumbnails');
+        const historyContainer = document.getElementById('imageHistory');
+        const historyCount = document.getElementById('historyCount');
+
+        function addToHistory(data) {
+            imageHistory.unshift({
+                image: data.image,
+                prompt: data.original_text,
+                timestamp: Date.now()
+            });
+
+            if (imageHistory.length > maxHistoryItems) {
+                imageHistory.pop();
+            }
+
+            renderHistory();
+        }
+
+        function renderHistory() {
+            historyThumbnails.innerHTML = '';
+            historyCount.textContent = `${imageHistory.length} of ${maxHistoryItems}`;
+
+            // Add actual thumbnails
+            imageHistory.forEach((item, index) => {
+                const thumb = document.createElement('div');
+                thumb.className = 'history-thumbnail' + (index === 0 ? ' active' : '');
+                thumb.innerHTML = `
+                    <img src="${item.image}" alt="Previous generation">
+                    <div class="history-tooltip">${item.prompt}</div>
+                `;
+                thumb.addEventListener('click', () => {
+                    generatedImage.src = item.image;
+                    generatedImage.classList.add('visible');
+                    imageDisplay.classList.add('has-image');
+                    placeholder.style.display = 'none';
+                    document.querySelectorAll('.history-thumbnail').forEach(t => t.classList.remove('active'));
+                    thumb.classList.add('active');
+                });
+                historyThumbnails.appendChild(thumb);
+            });
+
+            // Add placeholders for remaining empty slots
+            const remainingSlots = maxHistoryItems - imageHistory.length;
+            for (let i = 0; i < remainingSlots; i++) {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'history-placeholder';
+                placeholder.innerHTML = '+';
+                historyThumbnails.appendChild(placeholder);
+            }
+        }
+
+        // ========== Generate button ==========
+        const generateBtn = document.getElementById('generateBtn');
+        const styleSelect = document.getElementById('styleSelect');
+        const btnText = generateBtn.querySelector('.btn-text');
+        const imageDisplay = document.getElementById('imageDisplay');
+        const generatedImage = document.getElementById('generatedImage');
+        const placeholder = document.getElementById('placeholder');
+        const downloadActions = document.getElementById('downloadActions');
+
+        // FEATURE 1: Loading elements
+        const skeletonLoader = document.getElementById('skeletonLoader');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingText = document.getElementById('loadingText');
+        const loadingSubtext = document.getElementById('loadingSubtext');
+
+        // FEATURE 2: Generation time
+        const generationTimeEl = document.getElementById('generationTime');
+        const generationTimeValue = document.getElementById('generationTimeValue');
+
+        // FEATURE 6: Error handling
+        const errorDisplay = document.getElementById('errorDisplay');
+        const errorText = document.getElementById('errorText');
+        const errorDetails = document.getElementById('errorDetails');
+        const retryBtn = document.getElementById('retryBtn');
+
+        // Style descriptions for prompt engineering display
+        const styleDescriptions = {
+            'artistic': 'artistic interpretation, painterly style, expressive brushwork, fine art aesthetic',
+            'nature': 'natural landscape, organic forms, environmental beauty, nature photography style',
+            'abstract': 'abstract expressionism, geometric forms, flowing shapes, non-representational art',
+            'dreamscape': 'surreal dreamscape, ethereal atmosphere, fantastical elements, otherworldly beauty',
+            'photorealistic': 'photorealistic rendering, hyperrealistic detail, cinematic photography, professional lighting'
+        };
+
+        // Loading state messages
+        const loadingMessages = [
+            { text: 'Analyzing emotions...', sub: 'Understanding your feelings' },
+            { text: 'Building prompt...', sub: 'Crafting the perfect description' },
+            { text: 'Generating artwork...', sub: 'This may take 10-20 seconds' },
+            { text: 'Almost there...', sub: 'Adding final touches' }
+        ];
+
+        let loadingInterval = null;
+
+        function startLoadingAnimation() {
+            // Hide error if shown
+            errorDisplay.classList.remove('visible');
+
+            // Show loading states
+            skeletonLoader.classList.add('active');
+            loadingOverlay.classList.add('active');
+            imageDisplay.classList.add('generating');
+
+            // Hide placeholder
+            placeholder.style.display = 'none';
+
+            // Cycle through loading messages
+            let messageIndex = 0;
+            loadingText.textContent = loadingMessages[0].text;
+            loadingSubtext.textContent = loadingMessages[0].sub;
+
+            loadingInterval = setInterval(() => {
+                messageIndex = (messageIndex + 1) % loadingMessages.length;
+                loadingText.textContent = loadingMessages[messageIndex].text;
+                loadingSubtext.textContent = loadingMessages[messageIndex].sub;
+            }, 3000);
+        }
+
+        function stopLoadingAnimation() {
+            clearInterval(loadingInterval);
+            skeletonLoader.classList.remove('active');
+            loadingOverlay.classList.remove('active');
+            imageDisplay.classList.remove('generating');
+        }
+
+        function showError(message, details = '') {
+            errorText.textContent = message;
+            errorDetails.textContent = details;
+            errorDisplay.classList.add('visible');
+        }
+
+        async function generateImage() {
+            if (!emotionInput.value.trim()) {
+                emotionInput.focus();
+                return;
+            }
+
+            // Hide previous error
+            errorDisplay.classList.remove('visible');
+
+            generateBtn.disabled = true;
+            generateBtn.classList.remove('ready');
+            generateBtn.classList.add('loading');
+            btnText.textContent = 'Generating...';
+
+            // FEATURE 1: Start loading animation
+            startLoadingAnimation();
+
+            // FEATURE 2: Start timing
+            const startTime = performance.now();
+
+            // FEATURE 5: Get seed value
+            const userSeed = seedInput.value.trim();
+            const seed = userSeed ? parseInt(userSeed, 10) : Math.floor(Math.random() * 2147483647);
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: emotionInput.value.trim(),
+                        style: styleSelect.value,
+                        seed: seed
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    // FEATURE 6: Show friendly error
+                    showError('Generation failed. Please try again.', data.error);
+                    stopLoadingAnimation();
+                    placeholder.style.display = 'block';
+                    return;
+                }
+
+                // FEATURE 2: Calculate generation time
+                const endTime = performance.now();
+                const generationSeconds = ((endTime - startTime) / 1000).toFixed(1);
+
+                // Store generation data for downloads
+                currentGenerationData = data;
+
+                // FEATURE 5: Update seed display
+                lastUsedSeed = data.seed || seed;
+                lastSeedValue.textContent = lastUsedSeed;
+                usedSeedDisplay.classList.add('visible');
+
+                // Stop loading animation
+                stopLoadingAnimation();
+
+                // Show generated image
+                generatedImage.src = data.image;
+                generatedImage.classList.add('visible');
+                imageDisplay.classList.add('has-image');
+                placeholder.style.display = 'none';
+
+                // FEATURE 2: Show generation time
+                generationTimeValue.textContent = generationSeconds;
+                generationTimeEl.classList.add('visible');
+
+                // Show download buttons
+                downloadActions.classList.add('visible');
+
+                // FEATURE 7: Add to history
+                addToHistory(data);
+
+                // Update primary emotion (remove default styling)
+                const primaryEmotionEl = document.getElementById('primaryEmotion');
+                primaryEmotionEl.classList.remove('default');
+                primaryEmotionEl.textContent =
+                    data.primary_emotion.charAt(0).toUpperCase() + data.primary_emotion.slice(1);
+                document.getElementById('primaryConfidence').textContent =
+                    data.confidence + '% confidence';
+
+                // Update valence display
+                const valenceDisplay = document.getElementById('valenceDisplay');
+                const valenceLabel = data.valence >= 0 ? 'Positive' : 'Negative';
+                const valenceClass = data.valence >= 0 ? 'positive' : 'negative';
+                valenceDisplay.className = 'dimension-value ' + valenceClass;
+                valenceDisplay.innerHTML = valenceLabel + '<span class="dimension-number">(' +
+                    (data.valence >= 0 ? '+' : '') + data.valence.toFixed(1) + ')</span>';
+
+                // Update arousal display
+                const arousalDisplay = document.getElementById('arousalDisplay');
+                const arousalLabel = data.arousal >= 0.5 ? 'Energized' : 'Calm';
+                const arousalClass = data.arousal >= 0.5 ? 'energized' : 'calm';
+                arousalDisplay.className = 'dimension-value ' + arousalClass;
+                arousalDisplay.innerHTML = arousalLabel + '<span class="dimension-number">(' +
+                    data.arousal.toFixed(1) + ')</span>';
+
+                // Update all 7 emotion bars
+                const emotionBars = document.getElementById('emotionBars');
+                const emotionBarsHTML = data.emotions.map((e, i) => `
+                    <div class="emotion-bar">
+                        <span class="emotion-name">${e.name.charAt(0).toUpperCase() + e.name.slice(1)}</span>
+                        <div class="emotion-track">
+                            <div class="emotion-fill ${i > 0 ? 'secondary' : ''}" style="width: ${e.score}%"></div>
+                        </div>
+                        <span class="emotion-value">${e.score.toFixed(1)}%</span>
+                    </div>
+                `).join('');
+                emotionBars.innerHTML = emotionBarsHTML;
+
+                // Update prompt text (remove default styling)
+                const promptTextEl = document.getElementById('promptText');
+                promptTextEl.classList.remove('default');
+                promptTextEl.textContent = '"' + data.prompt + '"';
+
+                // Update Prompt Engineering Display
+                document.getElementById('userInputDisplay').textContent = data.original_text;
+                document.getElementById('enhancedPromptDisplay').textContent = data.prompt;
+                document.getElementById('modUserText').textContent = '"' + data.original_text + '"';
+                document.getElementById('modStyleText').textContent = '"' + styleDescriptions[data.style] + '"';
+
+            } catch (error) {
+                console.error('Error:', error);
+                stopLoadingAnimation();
+                placeholder.style.display = 'block';
+                // FEATURE 6: Show friendly error
+                showError('Failed to connect to server.', 'Make sure the server is running on localhost:8000');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('loading');
+                btnText.textContent = 'Generate Visualization';
+            }
+        }
+
+        generateBtn.addEventListener('click', generateImage);
+
+        // FEATURE 3: Regenerate button
+        document.getElementById('regenerateBtn').addEventListener('click', () => {
+            // Clear the seed to get a new random one
+            seedInput.value = '';
+            generateImage();
+        });
+
+        // FEATURE 6: Retry button
+        retryBtn.addEventListener('click', () => {
+            errorDisplay.classList.remove('visible');
+            generateImage();
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
